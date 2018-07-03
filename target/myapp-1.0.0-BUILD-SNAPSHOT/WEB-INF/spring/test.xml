@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="memberVO" class="com.kh.myapp.member.vo.MemberVO">
+   		<property name="id" value="admin4@kh.com"></property>
+   		<property name="passwd" value="1234"></property>
+   		<property name="name" value="일이삼"></property>
+   		<property name="birth" value="123456"></property>
+   		<property name="phone" value="123456"></property>
+   		<property name="gender" value="W"></property>
+   	</bean>
+   	
+	<bean id="memVO" class="com.kh.myapp.member.vo.MemberVO">
+		<constructor-arg ref="memberVO"/>
+	</bean>
+
+
+</beans>

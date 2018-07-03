@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bbsdao">
+
+<!-- 게시글등록 -->
+	<insert id="insert">
+	insert into bbs (bnum, btitle, bid, bname, bhit, bcontent, bgroup, bstep, bindent)
+	values(bbsnum_seq.nextval,#{btitle},#{bid},#{bname},#{bhit},#{bcontent},bbsnum_seq.currval,0,0)
+	</insert>
+
+<!-- 게시글 전체목록	 -->
+	<select id="list" resultType="BbsDTO">
+		select bnum, btitle, bname, bhit, bcontent, bcdate, bgroup, bstep, bindent
+		  from bbs
+	order by bgroup desc, bstep asc	
+	</select>
+	
+<!-- 게시글 가져오기	 -->
+	<select id="view" resultType="BbsDTO">
+		select bnum, btitle, bid,bname, bhit, bcontent, bcdate from bbs
+		where bnum = #{bnum}
+	</select>
+
+<!-- 조회수 증가 -->
+	<update id="hit" >
+		update bbs set  bhit = bhit + 1 where bnum = #{bnum}
+	</update>
+
+<!-- 게시글 수정 -->
+	<update id="update" >
+		update bbs set btitle=#{btitle}, bcontent = #{bcontent}
+		where bnum = #{bnum}
+	</update>	
+	
+<!-- 게시글 삭제	 -->
+	<delete id="delete">
+		delete from bbs where bnum = #{bnum}
+	</delete>	
+	
+<!-- 답글 보기 -->	
+	<select id="replyView" resultType="BbsDTO">
+		select bnum, btitle, bid, bname, bhit, bcontent, 
+					 bcdate, bgroup, bstep, bindent
+		  from bbs where bnum = #{bnum}
+	</select>
+	
+<!-- 답글 등록	 -->
+	<insert id="reply">
+		insert into bbs (bnum, btitle, bid, bname, bhit, bcontent, 
+										 bgroup, bstep, bindent) 
+							values(bbsnum_seq.nextval,#{btitle},#{bid},#{bname},0,#{bcontent},
+							#{bgroup},#{bstep},#{bindent})										 
+	</insert>
+	
+<!-- 게시 목록 가져오기 -->	
+	<select id="listPageCri" resultType="BbsDTO">
+		SELECT t2.*
+		FROM (SELECT row_number() over (ORDER BY bgroup desc, bstep asc) as num , t1.* 
+		FROM bbs t1) t2 
+		WHERE num between #{startRecord} and #{endRecord}	
+<!-- 		WHERE num between 1 and 10	 -->
+	</select>
+	
+<!-- 전체 게시글 수	 -->
+	<select id="totalRec" resultType="int">
+		select count(*) totalRec from bbs
+	</select>
+	
+<!-- 검색결과 게시목록 가져오기	 -->
+	<select id="listFindCri" resultType="BbsDTO">
+
+		SELECT t2.*
+		FROM (SELECT row_number() over (ORDER BY bgroup desc, bstep asc) as num , t1.*
+	  FROM bbs t1 where bnum > 0
+	   
+	  <choose>
+	  	<!-- 제목+내용 -->
+	    <when test="searchType == 'TC'.toString()">
+	      and (btitle like '%' || #{keyword} || '%' or bcontent like '%' || #{keyword} || '%')
+	    </when>
+	    <!-- 제목 -->
+	    <when test="searchType == 'T'.toString()">
+	      and btitle like '%' || #{keyword} || '%'
+	    </when>
+	    <!-- 내용 -->
+	    <when test="searchType == 'C'.toString()">
+	    	and bcontent like '%' || #{keyword} || '%'
+	    </when>   
+	  	<!-- 작성자 -->     
+	    <when test="searchType == 'W'.toString()">
+	    	and bname like '%' || #{keyword} || '%'
+	    </when>   
+	    <!-- 제목+내용+작성자 -->  
+	    <otherwise>
+	      and (btitle like '%' || #{keyword} || '%' or bcontent like '%' || #{keyword} || '%' or bname like '%' || #{keyword} || '%')
+	    </otherwise>
+	  </choose>
+     
+	   ) t2
+	   WHERE num between #{startRecord} and #{endRecord}	
+	   			
+	</select>
+	
+<!-- 검색 게시글 수 --> 
+	<select id="searchTotalRec"  resultType="int">
+		SELECT count(*) totalRec
+		  FROM (SELECT row_number() over (ORDER BY bgroup desc, bstep asc) as num , t1.* 
+	    FROM bbs t1 where bnum > 0 
+	   
+	  <choose>
+	  	<!-- 제목+내용 -->
+	    <when test="searchType == 'TC'.toString()">
+	      and (btitle like '%' || #{keyword} || '%' or bcontent like '%' || #{keyword} || '%')
+	    </when>
+	    <!-- 제목 -->
+	    <when test="searchType == 'T'.toString()">
+	      and btitle like '%' || #{keyword} || '%'
+	    </when>
+	    <!-- 내용 -->
+	    <when test="searchType == 'C'.toString()">
+	    	and bcontent like '%' || #{keyword} || '%'
+	    </when>   
+	  	<!-- 작성자 -->     
+	    <when test="searchType == 'W'.toString()">
+	    	and bname like '%' || #{keyword} || '%'
+	    </when>   
+	    <!-- 제목+내용+작성자 -->  
+	    <otherwise>
+	      and (btitle like '%' || #{keyword} || '%' or bcontent like '%' || #{keyword} || '%' or bname like '%' || #{keyword} || '%')
+	    </otherwise>
+	  </choose>
+		
+	   ) t2 
+	</select>	
+	
+<!-- 게시글 단계 반영 -->	
+	<update id="updateStep">
+		update bbs set bstep = bstep+1 where bgroup = #{bgroup} and bstep > #{bstep}
+	</update>			 
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

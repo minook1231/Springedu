@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+encoding//src/main/java/com/kh/myapp/bbs/dao/BbsDAO.java=UTF-8
+encoding//src/main/java/com/kh/myapp/controller/LoginController.java=UTF-8
+encoding//src/main/webapp/WEB-INF/views/login/login.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/views/member/memberJoin_old2.jsp=UTF-8
+encoding/<project>=UTF-8
