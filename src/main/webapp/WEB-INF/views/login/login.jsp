@@ -82,7 +82,7 @@ html, body{
 			class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
 			<form:form  action="${pageContext.request.contextPath}/${loginUrl}"	method="post">
 				<fieldset>
-					<h2 class="text-center">로그인로그인</h2>
+					<h2 class="text-center">로그인</h2>
 					<hr class="colorgraph">
 					<c:if test="${param.fail !=null }">	<div class="text-center" id="errMsg">로그인 실패!!</div>	</c:if>
 					<hr class="colorgraph">					
